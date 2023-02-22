@@ -19,6 +19,6 @@ provider "google" {
 }
 
 resource "google_storage_bucket" "gcs_bucket" {
-  name = "test-bucket_finance-c2610991703"
+  name = "test-bucket_finance-1c2610991703"
   location = var.region
 }
