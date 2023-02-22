@@ -4,18 +4,31 @@ on:
   push:
     branches:
     - main
-    paths:
-      - '/terraform/**.tf'
   pull_request:
 
 jobs:
+  directories:
+    name: "Directory-changes"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: theappnest/terraform-monorepo-action@master
+        id: directories
+      - run: echo ${{ steps.directories.outputs.modules }}
+    outputs:
+      dirs: ${{ steps.directories.outputs.modules }}
+
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    needs: directories
+    strategy:
+      matrix:
+        directories: ${{ fromJson(needs.directories.outputs.dirs) }}
     defaults:
       run:
+        working-directory: ${{ matrix.directories }}
         shell: bash
 
     steps:
